@@ -1,12 +1,19 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
 const express = require('express')
+const compression = require('compression')
 const multer = require('multer')
 const Files = require('./Files')
 const path = require('path')
+const helmet = require('helmet')
+
 const mongoose = require('mongoose')
 
 const app = express()
+
+app.use(compression())
+app.use(helmet())
+
 const upload = multer({
   dest: 'uploads/',
   limits: {
@@ -14,6 +21,8 @@ const upload = multer({
   },
 })
 const PORT = process.env.PORT || 3000
+
+console.log('NODE_ENV: ' + process.env.NODE_ENV)
 
 mongoose.connect(process.env.DATABASE_URL)
 
