@@ -1,18 +1,20 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
 const express = require('express')
-const compression = require('compression')
 const multer = require('multer')
 const Files = require('./Files')
 const path = require('path')
-const helmet = require('helmet')
-
 const mongoose = require('mongoose')
 
 const app = express()
 
-app.use(compression())
-app.use(helmet())
+if (process.env.NODE_ENV === 'production') {
+  const compression = require('compression')
+  const helmet = require('helmet')
+
+  app.use(compression())
+  app.use(helmet())
+}
 
 const upload = multer({
   dest: 'uploads/',
