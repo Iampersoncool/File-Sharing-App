@@ -1,5 +1,6 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
+const { getUserInfo } = require('@replit/repl-auth')
 const express = require('express')
 const multer = require('multer')
 const Files = require('./Files')
@@ -7,6 +8,8 @@ const path = require('path')
 const mongoose = require('mongoose')
 
 const app = express()
+app.set('view engine', 'ejs')
+app.use(express.static(path.join(__dirname, '/public')))
 
 if (process.env.NODE_ENV === 'production') {
   const compression = require('compression')
@@ -32,10 +35,9 @@ const db = mongoose.connection
 db.on('error', (err) => console.log(err))
 db.on('open', () => console.log('connected to db.'))
 
-app.use('/static', express.static(path.join(__dirname, '/public')))
-app.set('view engine', 'ejs')
-
 app.get('/', async (req, res) => {
+  const user = getUserInfo(req)
+
   const files = await Files.find({})
   res.render('index', { files })
 })
@@ -59,9 +61,9 @@ app.get('/files/:id', async (req, res) => {
       _id: req.params.id,
     })
 
-    res.download(path.join('uploads', filePath), originalFileName)
+    res.download(`./uploads/${filePath}`, originalFileName)
   } catch (e) {
-    // res.status(404).send('File Not Found.')
+    res.status(404).send('File Not Found.')
   }
 })
 
