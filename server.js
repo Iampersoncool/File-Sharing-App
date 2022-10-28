@@ -16,7 +16,18 @@ if (process.env.NODE_ENV === 'production') {
   const helmet = require('helmet')
 
   app.use(compression())
-  app.use(helmet())
+  app.use(
+    helmet.contentSecurityPolicy({
+      useDefaults: false,
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", 'replit.com/public/js/repl-auth-v2.js'],
+        styleSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        connectSrc: ["'self'"],
+      },
+    })
+  )
 }
 
 const upload = multer({
