@@ -47,10 +47,18 @@ db.on('error', (err) => console.log(err))
 db.on('open', () => console.log('connected to db.'))
 
 app.get('/', async (req, res) => {
-  const user = getUserInfo(req)
-
-  const files = await Files.find({})
+  const files = await Files.find()
   res.render('index', { files })
+})
+
+app.get('/admin', async (req, res) => {
+  const user = await getUserInfo(req)
+  const authorized = user?.id === process.env.OWNER_USR_ID ? true : false
+
+  if (!authorized) return res.status(401).send('Unauthorized')
+
+  const files = await Files.find()
+  res.render('showAll', { files, authorized })
 })
 
 app.post('/upload/new', upload.single('uploadedFile'), async (req, res) => {

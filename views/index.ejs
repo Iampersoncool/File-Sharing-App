@@ -6,23 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
     <link rel="stylesheet" href="/style.css" />
-    <script src="https://replit.com/public/js/repl-auth-v2.js"></script>
-    <script src="/script.js" defer></script>
   </head>
   <body>
     <form action="/upload/new" method="POST" enctype="multipart/form-data">
       <input type="file" name="uploadedFile" required />
       <button type="submit">Submit</button>
     </form>
-
-    <h1 style="margin-top: 2rem;">Files</h1>
-    <% locals.files?.forEach(file => { %>
-      <div class="files">
-        <h1><%= file.originalFileName %></h1>
-        <a href="/files/<%= file._id %>">Download</a>
-      </div>
-    <% }) %>
-
-    <button class="login-btn">Login</button>
   </body>
 </html>

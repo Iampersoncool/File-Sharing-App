@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Files</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://replit.com/public/js/repl-auth-v2.js"></script>
+  <script src="/script.js" defer></script>
+</head>
+<body>
+  <% if (locals.authorized) { %>
+    <h1>All Files</h1>
+    <div class="margin-top-2-rem"></div>
+    <% locals.files?.forEach(file => { %>
+      <div class="files">
+        <h1><%= file.originalFileName %></h1>
+        <a href="/files/<%= file._id %>">Download</a>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <button class="login-btn">Login</button>
+  <% } %> 
+</body>
+</html>

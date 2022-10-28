@@ -22,3 +22,7 @@ button[type='submit'] {
 .files a {
   font-size: 1.2rem;
 }
+
+.margin-top-2-rem {
+  margin-top: 2rem;
+}
