@@ -6,6 +6,7 @@ const multer = require('multer')
 const Files = require('./Files')
 const path = require('path')
 const mongoose = require('mongoose')
+const { setTimeout } = require('timers/promises')
 
 const app = express()
 // app.use(express.urlencoded({ extended: false }))
@@ -49,6 +50,10 @@ db.on('open', () => console.log('connected to db.'))
 
 app.get('/', async (req, res) => {
   res.render('index')
+})
+
+app.get('/logout', async (req, res) => {
+  res.clearCookie('REPL_AUTH').redirect('/')
 })
 
 app.get('/admin', async (req, res) => {
