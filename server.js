@@ -48,8 +48,7 @@ db.on('error', (err) => console.log(err))
 db.on('open', () => console.log('connected to db.'))
 
 app.get('/', async (req, res) => {
-  const files = await Files.find()
-  res.render('index', { files })
+  res.render('index')
 })
 
 app.get('/admin', async (req, res) => {
