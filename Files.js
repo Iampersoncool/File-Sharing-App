@@ -13,7 +13,8 @@ const FileSchema = new Schema({
   },
   uuid: {
     type: String,
-    default: uuidv4(),
+    unique: true,
+    default: () => uuidv4(),
   },
 })
 
