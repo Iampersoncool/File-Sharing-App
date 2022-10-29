@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Link</title>
+  <meta property="og:title" content="Download URL for <%= locals.fileName %>" />
+  <meta property="og:description" content="This is a file sharing app. Click upload file to upload a file, and click submit when you're done." />
+  <meta property="keywords" content="HTML, CSS, JavaScript, File sharing application">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= locals.link %>">
+  <link rel="stylesheet" href="/download.css">
+</head>
+<body>
+  <h1>
+    Download Link: <a href="<%= locals.link %>"><%= locals.link %></a>
+  </h1>
+</body>
+</html>

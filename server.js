@@ -8,6 +8,7 @@ const path = require('path')
 const mongoose = require('mongoose')
 
 const app = express()
+// app.use(express.urlencoded({ extended: false }))
 app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, '/public')))
 
@@ -33,7 +34,7 @@ if (process.env.NODE_ENV === 'production') {
 const upload = multer({
   dest: 'uploads/',
   limits: {
-    fileSize: 10000000,
+    fileSize: 41943040, //40 megabytes
   },
 })
 const PORT = process.env.PORT || 3000
@@ -52,35 +53,42 @@ app.get('/', async (req, res) => {
 })
 
 app.get('/admin', async (req, res) => {
-  const user = await getUserInfo(req)
-  const authorized = user?.id === process.env.OWNER_USR_ID ? true : false
+  const user = getUserInfo(req)
+  const authorized = user?.id === process.env.OWNER_USER_ID ? true : false
+  let files
 
-  if (!authorized) return res.status(401).send('Unauthorized')
+  if (authorized) files = await Files.find()
 
-  const files = await Files.find()
   res.render('showAll', { files, authorized })
 })
 
-app.post('/upload/new', upload.single('uploadedFile'), async (req, res) => {
-  try {
+app.post('/upload/new', (req, res) => {
+  upload.single('uploadedFile')(req, res, async (err) => {
+    if (err) return res.status(500).send('Internal server error')
+
     const { filename, originalname } = req.file
-    await Files.create({
+
+    const createdFile = await Files.create({
       originalFileName: originalname,
       path: filename,
     })
-    res.redirect('/')
-  } catch (e) {
-    res.status(500).send('Error uploading file.')
-  }
+
+    console.log(`https://${req.headers.host}/files/${createdFile.uuid}`)
+
+    res.render('download', {
+      fileName: createdFile.originalFileName,
+      link: `https://${req.headers.host}/files/${createdFile.uuid}`,
+    })
+  })
 })
 
 app.get('/files/:id', async (req, res) => {
   try {
-    const { path: filePath, originalFileName } = await Files.findById({
-      _id: req.params.id,
+    const file = await Files.findOne({
+      uuid: req.params.id,
     })
 
-    res.download(`./uploads/${filePath}`, originalFileName)
+    res.download(`./uploads/${file.path}`, file.originalFileName)
   } catch (e) {
     res.status(404).send('File Not Found.')
   }

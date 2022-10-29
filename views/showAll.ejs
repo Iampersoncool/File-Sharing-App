@@ -16,7 +16,7 @@
     <% locals.files?.forEach(file => { %>
       <div class="files">
         <h1><%= file.originalFileName %></h1>
-        <a href="/files/<%= file._id %>">Download</a>
+        <a href="/files/<%= file.uuid %>">Download</a>
       </div>
     <% }) %>
   <% } else { %>
