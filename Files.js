@@ -5,6 +5,7 @@ const FileSchema = new Schema({
   originalFileName: {
     type: String,
     required: true,
+    unique: true,
   },
   path: {
     type: String,
