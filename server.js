@@ -8,7 +8,7 @@ const path = require('path')
 const mongoose = require('mongoose')
 
 const app = express()
-// app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }))
 app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, '/public')))
 
@@ -22,8 +22,15 @@ if (process.env.NODE_ENV === 'production') {
       useDefaults: false,
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", 'replit.com/public/js/repl-auth-v2.js'],
-        styleSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          'replit.com/public/js/repl-auth-v2.js',
+          'cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js',
+        ],
+        styleSrc: [
+          "'self'",
+          'cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark.min.css',
+        ],
         fontSrc: ["'self'"],
         connectSrc: ["'self'"],
       },
@@ -59,12 +66,37 @@ app.get('/logout', (req, res) => {
 
 app.get('/admin', async (req, res) => {
   const user = getUserInfo(req)
-  const authorized = user?.id === process.env.OWNER_USER_ID ? true : false
+  const authorized = user?.id === process.env.OWNER_USER_ID
   let files
 
   if (authorized) files = await Files.find()
 
-  res.render('showAll', { files, authorized })
+  res.render('showAll', {
+    files,
+    authorized,
+  })
+})
+
+app.post('/db/update', async (req, res) => {
+  const user = getUserInfo(req)
+  const authorized = user?.id === process.env.OWNER_USER_ID
+
+  if (!authorized) return res.status(401).send('Unauthorized')
+
+  const parsedJSON = JSON.parse(req.body.value)
+
+  parsedJSON.forEach(async ({ _id, originalFileName, path, uuid }) => {
+    await Files.updateOne(
+      { _id },
+      {
+        originalFileName,
+        path,
+        uuid,
+      }
+    )
+  })
+
+  res.redirect('/admin')
 })
 
 app.post('/upload/new', (req, res) => {
@@ -77,8 +109,6 @@ app.post('/upload/new', (req, res) => {
       originalFileName: originalname,
       path: filename,
     })
-
-    console.log(`https://${req.headers.host}/files/${createdFile.uuid}`)
 
     res.render('download', {
       fileName: createdFile.originalFileName,

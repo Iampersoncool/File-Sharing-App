@@ -26,3 +26,21 @@ button[type='submit'] {
 .margin-top-2-rem {
   margin-top: 2rem;
 }
+
+.update-db-form > button[type='submit'] {
+  font-size: 1.2rem;
+  padding: 0.4rem;
+}
+
+.update-db-form textarea {
+  font-size: 1.2rem;
+  outline: none;
+  resize: none;
+  width: 50rem;
+  height: 100vh;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(900px, 1fr));
+}

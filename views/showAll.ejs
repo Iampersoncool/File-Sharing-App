@@ -11,14 +11,26 @@
 </head>
 <body>
   <% if (locals.authorized) { %>
-    <h1>All Files</h1>
-    <div class="margin-top-2-rem"></div>
-    <% locals.files?.forEach(file => { %>
-      <div class="files">
-        <h1><%= file.originalFileName %></h1>
-        <a href="/files/<%= file.uuid %>">Download</a>
+    <div class="grid">
+
+      <div>
+        <a href="/logout">Logout</a>
+        <h1>All Files</h1>
+        <div class="margin-top-2-rem"></div>
+      
+        <% locals.files?.forEach(file => { %>
+          <div class="files">
+            <h1><%= file.originalFileName %></h1>
+            <a href="/files/<%= file.uuid %>">Download</a>
+          </div>
+          <% }) %>
       </div>
-    <% }) %>
+        
+        <form action="/db/update" method="POST" class="update-db-form">
+          <textarea name="value" spellcheck="false"><%= JSON.stringify(locals.files, null, 2) %></textarea>
+          <button type="submit">Update DB</button>
+        </form>
+      </div>
   <% } else { %>
     <button class="login-btn">Login</button>
   <% } %> 
