@@ -87,16 +87,18 @@ app.post('/db/update', async (req, res) => {
 
   const parsedJSON = JSON.parse(req.body.value)
 
-  parsedJSON.forEach(async ({ _id, originalFileName, path, uuid }) => {
-    await Files.updateOne(
-      { _id },
-      {
-        originalFileName,
-        path,
-        uuid,
-      }
-    )
-  })
+  await Promise.all(
+    parsedJSON.map(async ({ _id, originalFileName, path, uuid }) => {
+      await Files.updateOne(
+        { _id },
+        {
+          originalFileName,
+          path,
+          uuid,
+        }
+      )
+    })
+  )
 
   res.redirect('/admin')
 })
