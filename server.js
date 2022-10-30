@@ -15,8 +15,10 @@ app.use(express.static(path.join(__dirname, '/public')))
 if (process.env.NODE_ENV === 'production') {
   const compression = require('compression')
   const helmet = require('helmet')
+  const hidePoweredBy = require('hide-powered-by')
 
   app.use(compression())
+  app.use(hidePoweredBy({ setTo: 'Replit' }))
   app.use(
     helmet.contentSecurityPolicy({
       useDefaults: false,
