@@ -71,7 +71,7 @@ app.get('/admin', async (req, res) => {
   const authorized = user?.id === process.env.OWNER_USER_ID
   let files
 
-  if (authorized) files = await Files.find()
+  if (authorized) files = await Files.find({}, { _id: 0, __v: 0 })
 
   res.render('showAll', {
     files,
@@ -88,9 +88,9 @@ app.post('/db/update', async (req, res) => {
   const parsedJSON = JSON.parse(req.body.value)
 
   await Promise.all(
-    parsedJSON.map(async ({ _id, originalFileName, path, uuid }) => {
+    parsedJSON.map(async ({ originalFileName, path, uuid }) => {
       await Files.updateOne(
-        { _id },
+        { uuid },
         {
           originalFileName,
           path,
