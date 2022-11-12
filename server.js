@@ -5,6 +5,8 @@ const express = require("express");
 const multer = require("multer");
 const Files = require("./Files");
 const path = require("path");
+const productionCode = require("./productionCode");
+
 require("./db");
 
 const app = express();
@@ -13,31 +15,7 @@ app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "/public")));
 
 if (process.env.NODE_ENV === "production") {
-  const compression = require("compression");
-  const helmet = require("helmet");
-  const hidePoweredBy = require("hide-powered-by");
-
-  app.use(compression());
-  app.use(hidePoweredBy({ setTo: "Replit" }));
-  app.use(
-    helmet.contentSecurityPolicy({
-      useDefaults: false,
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: [
-          "'self'",
-          "replit.com/public/js/repl-auth-v2.js",
-          "cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js",
-        ],
-        styleSrc: [
-          "'self'",
-          "cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/atom-one-dark.min.css",
-        ],
-        fontSrc: ["'self'"],
-        connectSrc: ["'self'"],
-      },
-    })
-  );
+  productionCode(app);
 }
 
 const upload = multer({
@@ -50,8 +28,9 @@ const PORT = process.env.PORT || 3000;
 
 console.log("NODE_ENV: " + process.env.NODE_ENV);
 
-app.get("/", (req, res) => {
-  res.render("index");
+app.get("/", async (req, res) => {
+  const files = await Files.find();
+  res.render("index", { files });
 });
 
 app.get("/logout", (req, res) => {
@@ -60,16 +39,16 @@ app.get("/logout", (req, res) => {
   res.redirect("/admin");
 });
 
-app.get("/admin", async (req, res) => {
-  const user = getUserInfo(req);
-  const authorized = user?.id === process.env.OWNER_USER_ID;
-  const files = authorized ? await Files.find({}, { __id: 0, __v: 0 }) : null;
+// app.get("/admin", async (req, res) => {
+//   const user = getUserInfo(req);
+//   const authorized = user?.id === process.env.OWNER_USER_ID;
+//   const files = authorized ? await Files.find({}, { __id: 0, __v: 0 }) : null;
 
-  res.render("showAll", {
-    files,
-    authorized,
-  });
-});
+//   res.render("showAll", {
+//     files,
+//     authorized,
+//   });
+// });
 
 app.post("/db/update", async (req, res) => {
   const user = getUserInfo(req);

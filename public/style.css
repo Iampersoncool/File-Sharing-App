@@ -9,7 +9,7 @@
   padding: 0;
 }
 
-button[type='submit'] {
+button[type="submit"] {
   display: block;
 }
 
@@ -27,7 +27,7 @@ button[type='submit'] {
   margin-top: 2rem;
 }
 
-.update-db-form > button[type='submit'] {
+.update-db-form > button[type="submit"] {
   font-size: 1.2rem;
   padding: 0.4rem;
 }
@@ -43,4 +43,8 @@ button[type='submit'] {
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(900px, 1fr));
+}
+
+.files-container {
+  margin-top: 1rem;
 }

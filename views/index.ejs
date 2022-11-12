@@ -11,11 +11,22 @@
     <meta property="keywords" content="HTML, CSS, JavaScript, File sharing application">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://file-sharing-application.aperson69.repl.co">
+    <script defer src="/index.js"></script>
   </head>
   <body>
     <form action="/upload/new" method="POST" enctype="multipart/form-data">
       <input type="file" name="uploadedFile" required />
       <button type="submit">Submit</button>
     </form>
+
+    <div class="files-container">
+      <% locals.files?.forEach(file => { %>
+        <div class="files">
+          <h1><%= file.originalFileName %></h1>
+          <a href="/files/<%= file.uuid %>">Download</a>
+        </div>
+      <% }) %>
+    </div>
+
   </body>
 </html>
